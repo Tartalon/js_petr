@@ -12,41 +12,61 @@
 
 5) Добавить нумерацию выведенных фильмов */
 
-'use strict';
+"use strict";
 
 const movieDB = {
   movies: [
-    'Логан',
-    'Лига справедливости',
-    'Ла-ла лэнд',
-    'Одержимость',
-    'Скотт Пилигрим против...',
+    "Логан",
+    "Лига справедливости",
+    "Ла-ла лэнд",
+    "Одержимость",
+    "Скотт Пилигрим против...",
   ],
 };
 
-const promoAdv = document.querySelectorAll('.promo__adv img');
-const promoGenre = document.querySelector('.promo__genre');
-const promoBg = document.querySelector('.promo__bg');
-const promoInteractiveList = document.querySelector('.promo__interactive-list');
+const promoAdv = document.querySelectorAll(".promo__adv img");
+const promoGenre = document.querySelector(".promo__genre");
+const promoBg = document.querySelector(".promo__bg");
+const promoInteractiveList = document.querySelector(".promo__interactive-list");
+const button = document.querySelector("button");
+const filmInput = document.querySelector(".adding__input");
+const deleteFilmArr = document.querySelectorAll(".delete");
+
+button.addEventListener("click", function (e) {
+  e.preventDefault();
+  const filmName = filmInput.value;
+  if (filmName.length > 21) {
+    movieDB.movies.push(filmName.slice(0, 21) + "...");
+  } else {
+    movieDB.movies.push(filmInput.value);
+  }
+});
+
+promoInteractiveList.addEventListener("click", function (e) {
+  const target = e.target;
+  if (target.className === "delete") {
+    target.parentNode.remove();
+  }
+});
 
 function removeAdv(arr) {
-  arr.forEach(element => {
+  arr.forEach((element) => {
     element.remove();
   });
 }
 
 function changeText(block) {
-  block.textContent = 'драма';
+  block.textContent = "драма";
 }
 
 function changeBg(block) {
-  block.style.backgroundImage = 'url(./img/bg.jpg)';
+  block.style.backgroundImage = "url(./img/bg.jpg)";
 }
 
 function displayMovieTitles(list) {
   const sortedArr = movieDB.movies.sort();
 
-  list.innerHTML = '';
+  list.innerHTML = "";
 
   sortedArr.forEach((item, i) => {
     list.innerHTML += `
@@ -55,7 +75,6 @@ function displayMovieTitles(list) {
         </li>
       `;
   });
-  console.log(sortedArr);
 }
 
 removeAdv(promoAdv);
