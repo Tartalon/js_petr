@@ -1,32 +1,32 @@
-"use strict";
+'use strict';
 
-window.addEventListener("DOMContentLoaded", () => {
-  const tabs = document.querySelectorAll(".tabheader__item"),
-    tabsContent = document.querySelectorAll(".tabcontent"),
-    tabsParent = document.querySelector(".tabheader__items");
+window.addEventListener('DOMContentLoaded', () => {
+  const tabs = document.querySelectorAll('.tabheader__item'),
+    tabsContent = document.querySelectorAll('.tabcontent'),
+    tabsParent = document.querySelector('.tabheader__items');
 
   function hideTabContent() {
-    tabsContent.forEach((item) => {
-      item.style.display = "none";
+    tabsContent.forEach(item => {
+      item.style.display = 'none';
     });
 
-    tabs.forEach((item) => {
-      item.classList.remove("tabheader__item_active");
+    tabs.forEach(item => {
+      item.classList.remove('tabheader__item_active');
     });
   }
 
   function showTabContent(i = 0) {
-    tabsContent[i].style.display = "block";
-    tabs[i].classList.add("tabheader__item_active");
+    tabsContent[i].style.display = 'block';
+    tabs[i].classList.add('tabheader__item_active');
   }
 
   hideTabContent();
   showTabContent();
 
-  tabsParent.addEventListener("click", (e) => {
+  tabsParent.addEventListener('click', e => {
     const target = e.target;
 
-    if (target && target.classList.contains("tabheader__item")) {
+    if (target && target.classList.contains('tabheader__item')) {
       tabs.forEach((item, i) => {
         if (target == item) {
           hideTabContent();
@@ -38,7 +38,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   //Timer
 
-  const deadline = "2022-01-01";
+  const deadline = '2022-01-01';
 
   function getTimeRemaining(endtime) {
     const t = Date.parse(endtime) - Date.parse(new Date()),
@@ -66,10 +66,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
   function setClock(selector, endtime) {
     const timer = document.querySelector(selector),
-      days = timer.querySelector("#days"),
-      hours = timer.querySelector("#hours"),
-      minutes = timer.querySelector("#minutes"),
-      seconds = timer.querySelector("#seconds"),
+      days = timer.querySelector('#days'),
+      hours = timer.querySelector('#hours'),
+      minutes = timer.querySelector('#minutes'),
+      seconds = timer.querySelector('#seconds'),
       timeInterval = setInterval(updateClock, 1000);
 
     updateClock();
@@ -88,47 +88,47 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  setClock(".timer", deadline);
+  setClock('.timer', deadline);
 
   //Modal
 
-  const modalTrigger = document.querySelectorAll("[data-modal]"),
-    modal = document.querySelector(".modal"),
-    modalCloseBtn = document.querySelector("[data-close]");
+  const modalTrigger = document.querySelectorAll('[data-modal]'),
+    modal = document.querySelector('.modal'),
+    modalCloseBtn = document.querySelector('[data-close]');
 
-  const modalTimerId = setTimeout(openModal, 5000);
+  // const modalTimerId = setTimeout(openModal, 5000);
 
-  modalTrigger.forEach((btn) => {
-    btn.addEventListener("click", openModal);
+  modalTrigger.forEach(btn => {
+    btn.addEventListener('click', openModal);
   });
 
-  modalCloseBtn.addEventListener("click", closeModal);
+  modalCloseBtn.addEventListener('click', closeModal);
 
-  modal.addEventListener("click", (e) => {
+  modal.addEventListener('click', e => {
     if (e.target === modal) {
       closeModal();
     }
   });
 
-  document.addEventListener("keydown", (e) => {
-    if (e.code === "Escape" && modal.classList.contains("show")) {
+  document.addEventListener('keydown', e => {
+    if (e.code === 'Escape' && modal.classList.contains('show')) {
       closeModal();
     }
   });
 
-  window.addEventListener("scroll", showModalByScroll);
+  window.addEventListener('scroll', showModalByScroll);
 
   function closeModal() {
-    modal.classList.add("hide");
-    modal.classList.remove("show");
-    document.body.style.overflow = "";
+    modal.classList.add('hide');
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
   }
 
   function openModal() {
-    modal.classList.add("show");
-    modal.classList.remove("hide");
-    document.body.style.overflow = "hidden";
-    clearInterval(modalTimerId);
+    modal.classList.add('show');
+    modal.classList.remove('hide');
+    document.body.style.overflow = 'hidden';
+    // clearInterval(modalTimerId);
   }
 
   function showModalByScroll() {
@@ -137,7 +137,54 @@ window.addEventListener("DOMContentLoaded", () => {
       document.documentElement.scrollHeight - 1
     ) {
       openModal();
-      window.removeEventListener("scroll", showModalByScroll);
+      window.removeEventListener('scroll', showModalByScroll);
     }
   }
+
+  // Cards
+
+  class MenuCard {
+    constructor(src, alt, title, descr, price, parentSelector) {
+      this.src = src;
+      this.alt = alt;
+      this.title = title;
+      this.descr = descr;
+      this.price = price;
+      this.parent = document.querySelector(parentSelector);
+      this.transfer = 27;
+      this.changeToUAH();
+    }
+
+    changeToUAH() {
+      this.price = this.price * this.transfer;
+    }
+
+    render() {
+      const element = document.createElement('div');
+      element.innerHTML = `
+      <div class="menu__item">
+            <img src=${this.src} alt=${this.alt} />
+            <h3 class="menu__item-subtitle">${this.title}</h3>
+            <div class="menu__item-descr">
+              ${this.descr}
+            </div>
+            <div class="menu__item-divider"></div>
+            <div class="menu__item-price">
+              <div class="menu__item-cost">Цена:</div>
+              <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
+            </div>
+          </div>
+      `;
+      this.parent.append(element);
+    }
+  }
+
+  new MenuCard(
+    'img/tabs/elite.jpg',
+    'elite',
+    'Меню “Премиум”',
+    'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
+    20,
+    '.menu .container'
+  ).render;
 });
