@@ -185,6 +185,16 @@ window.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 
+	const getResource = async url => {
+		const res = await fetch(url);
+
+		if (!res.ok) {
+			throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+		}
+
+		return await res.json();
+	};
+
 	new MenuCard(
 		'img/tabs/elite.jpg',
 		'elite',
@@ -224,10 +234,22 @@ window.addEventListener('DOMContentLoaded', () => {
 	};
 
 	forms.forEach(item => {
-		postData(item);
+		bindPostData(item);
 	});
 
-	function postData(form) {
+	const postData = async (url, data) => {
+		const res = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: data,
+		});
+
+		return await res.json();
+	};
+
+	function bindPostData(form) {
 		form.addEventListener('submit', e => {
 			e.preventDefault();
 
@@ -241,19 +263,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
 			const formData = new FormData(form);
 
-			const obj = {};
-			formData.forEach((value, key) => {
-				obj[key] = value;
-			});
+			const json = JSON.stringify(Object.fromEntries(formData.entries()));
 
-			fetch('server.php', {
-				method: 'POST',
-				headers: {
-					'Content-type': 'aplication/json',
-				},
-				body: JSON.stringify(obj),
-			})
-				.then(data => data.text())
+			postData('http://localhost:3000/requests', json)
 				.then(data => {
 					console.log(data);
 					showThanksModal(message.success);
@@ -292,7 +304,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		}, 4000);
 	}
 
-	fetch('http://localhost:3000/menu')
-		.then(data => data.json())
-		.then(res => console.log(res));
+	// fetch('http://localhost:3000/menu')
+	// 	.then(data => data.json())
+	// 	.then(res => console.log(res));
 });
