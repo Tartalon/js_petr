@@ -246,13 +246,14 @@ window.addEventListener('DOMContentLoaded', () => {
 				obj[key] = value;
 			});
 
-			fetch('../server.php', {
+			fetch('server.php', {
 				method: 'POST',
 				headers: {
-					'Content-type': 'aplication/jsone',
+					'Content-type': 'aplication/json',
 				},
 				body: JSON.stringify(obj),
 			})
+				.then(data => data.text())
 				.then(data => {
 					console.log(data);
 					showThanksModal(message.success);
